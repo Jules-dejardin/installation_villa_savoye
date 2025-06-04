@@ -14,10 +14,12 @@ s.options.inDevice_(
 	);
 
 s.options.numInputBusChannels_(1);
-s.options.numOutputBusChannels_(12);
+s.options.numOutputBusChannels_(18);
 s.options.sampleRate_(48000);
 s.options.memSize_(2.pow(20)); // ~1 GB of active memory
+s.options.blockSize_(512);
 // s.newBusAllocators;
+// 2.pow(20)
 (
 ~connect_midi_devices = { arg device, name;
     // init or refresh MIDIClient end points

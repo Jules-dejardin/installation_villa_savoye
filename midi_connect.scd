@@ -1,3 +1,16 @@
+// MIDIOut.findPort(0,0);
+// m = MIDIOut.new(1);
+//
+// (
+// Routine{
+// 	inf.do{
+// 		m.control(1,20, rrand(0,127));
+// 		0.5.wait;
+// 	};
+// }.play;
+// )
+// MIDIEndPoint("Midi Through", "Midi Through Port-0")
+// MIDIClient.destinations
 
 (
 ~connect_midi_devices = { arg device, name;

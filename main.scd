@@ -1,8 +1,7 @@
 (
 // Load factory
-"genericFunctions.scd".loadRelative;
+// "genericFunctions.scd".loadRelative;
 "busses.scd".loadRelative;
-
 "nodes.scd".loadRelative;
 "events.scd".loadRelative;
 "server.scd".loadRelative;
@@ -10,31 +9,37 @@
 // ###### <initialise global var ######/
 //Pan4
 ~out = 0;
-~freqNoise = 50;
-~rateNoise = 2;
-~atkNoise = 1;
-~volNappes = (-5);
-~often = 0.01;
-~interp_cloche = 1;
-~witchChannel = [0,1];
-~fg = 130; //fondamental du gong
-~projectPath=PathName(thisProcess.nowExecutingPath).parentPath;
-~sampleDirPath=~projectPath++"samples/";
+~bufenv = (-1);
+// ~projectPath=PathName(thisProcess.nowExecutingPath).parentPath;
+// ~sampleDirPath=~projectPath++"samples/";
 
 // 4 register functions
-ServerBoot.add(~loadSamples); // fill up the ~buffers dict
+// ServerBoot.add(~loadSamples); // fill up the ~buffers dict
 ServerBoot.add(~makeBusses);
 ServerQuit.add(~cleanup);
 
 // 5 boot serv
 s.waitForBoot({
+	s.sync;
+
+	~env0 = Env([0,1,0], [0.3,0.3], [-4, 4]).asSignal(512);
+	~env1 = Env([0,1,0], [0.3,0.4], [-2,-4]).asSignal(512);
+	~env2 = Env([0,1,0], [0.3,0.6], [2,-4]).asSignal(512);
+	~env3 = Env([0,1,0], [2,2], [8,-4]).asSignal(512);
+
+	s.sync;
+	~allenv = [~env0, ~env1, ~env2, ~env3];
+	s.sync;
+	~bufenv = Buffer.allocConsecutive(4,s, 1024);
+	s.sync;
+	~bufenv.do({
+	arg buf, i;
+	buf.loadCollection(~allenv[i]);
+	});
+
 	s.sync; //wait the server to be ok
 	"synthdefs.scd".loadRelative;
 	// "midi_connect.scd".loadRelative;
-
-	VSTPlugin.plugins['ValhallaFreqEcho'];
-	VSTPlugin.plugins['ValhallaSupermassive'];
-
 	s.sync;
 	ServerTree.add(~makeNodes);
 	ServerTree.add(~makeEvents);
@@ -45,9 +50,32 @@ s.waitForBoot({
 });
 )
 
+///
+m = MIDIOut.new(1);
+
+s.record(numChannels:4);
+
+	~env0 = Env([0,1,0], [0.01,0.01], [-4,-4]).asSignal(1024).asWavetable;
+	~env1 = Env([0,1,0], [0.3,0.4], [-2,-4]).asSignal(1024).asWavetable;
+	~env2 = Env([0,1,0], [0.3,0.6], [2,-4]).asSignal(1024).asWavetable;
+	~env3 = Env([0,1,0], [2,2], [8,-4]).asSignal(1024).asWavetable;
+
+	s.sync;
+	~allenv = [~env0, ~env1, ~env2, ~env3];
+	s.sync;
+	~bufenv = Buffer.allocConsecutive(4,s, 2048);
+	s.sync;
+~bufenv.do({
+	arg buf, i;
+	buf.loadCollection(~allenv[i]);
+	});
+
+~bufenv[0].bufnum + 3
+~allenv.do({arg n,i; n.plot(~bufenv[i].bufnum.asString)});
+
+
 20%21
 
-s.record(numChannels:10);
 // ~master.set(\out, 0.8);
 /*
 travailler en DB
