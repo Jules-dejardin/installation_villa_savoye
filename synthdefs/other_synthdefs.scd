@@ -1,5 +1,4 @@
 
-
 // [2] ++ [0.2,0.8,0.65,0.45, 0.3].scramble
 //Générateurs de sons
 SynthDef(\balayage, {
@@ -78,27 +77,7 @@ SynthDef(\AudioInputStereo, {
 	Out.ar(out, sig); //sortie directe a un bus
 }).add;
 
-SynthDef(\ptr, {
-	arg out=0, buf=0, rate=1;
-	var sig;
-	sig = Phasor.ar(0, BufRateScale.kr(buf)*rate, 0, BufFrames.kr(buf));
-	Out.ar(out, sig);
-}).add;
 
-SynthDef(\rec, {
-	arg ptrIn=0, micIn=0, buf=0;
-	var sig, ptr;
-	ptr = In.ar(ptrIn, 1);
-	sig = In.ar(micIn, 1);
-	BufWr.ar(sig, buf, ptr);
-}).add;
-
-SynthDef(\in, {
-	arg in_1, in_2, out, amp=0;
-	var sig;
-	sig = (In.ar(in_1, 1) + In.ar(in_2, 1))* amp.dbamp;
-	Out.ar(out,sig);
-}).add;
 
 //Env.asr(0.001, 0.5, 1, -10).test(2).plot;
 
