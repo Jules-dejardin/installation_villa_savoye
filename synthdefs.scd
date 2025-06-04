@@ -1,3 +1,5 @@
+
+
 // [2] ++ [0.2,0.8,0.65,0.45, 0.3].scramble
 //Générateurs de sons
 SynthDef(\balayage, {
