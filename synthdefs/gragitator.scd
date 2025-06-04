@@ -26,7 +26,7 @@ SynthDef(\rec, {
 }).add;
 
 // Synthdef de granulation principal (à partir du buffer de rec)
-SynthDef(\granDj,{
+SynthDef(\gragitator,{
 	arg sync=1, dens=20, baseDur=0.05, durRand=1, buf=0, rate=1, rateRand=1, grainEnv=(-1), panHz=0.1, panRand=0, atk=1, rel=1, amp=(-3), gate=1, out=0,out2=0, ptrBus=0, ptrSampleDelay=20000, ptrRandSamples=5000, minPtrDelay=1000, curve=(-8), hpf=25, switch=1, rq=0.5, freqFilter=2700, bufIndex=0, bufpos=0, panRate=0.5;
 
 	var sig, env, densCtrl, durCtrl, panCtrl, rateCtrl, ptr, ptrRand, totalDelay, maxGrainDur, pan, sig2, start;
