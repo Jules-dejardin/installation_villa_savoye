@@ -38,7 +38,10 @@ s.waitForBoot({
 	});
 
 	s.sync; //wait the server to be ok
-	"synthdefs.scd".loadRelative;
+	"synthdefs/spookyDelay.scd".loadRelative;
+	"synthdefs/gragitator.scd".loadRelative;
+	"synthdefs/fonComb.scd".loadRelative;
+	"synthdefs/routing.scd".loadRelative;
 	// "midi_connect.scd".loadRelative;
 	s.sync;
 	ServerTree.add(~makeNodes);

@@ -2,23 +2,32 @@
 ~makeNodes = {
 
 	s.bind({
-		~mainGrp = Group.new;
-			~djGrp = Group.after(~mainGrp);
-			~ptrGrp = Group.after(~djGrp);
-			~recGrp = Group.after(~ptrGrp);
+		~djGrp = Group.new;
+		~ptrGrp = Group.after(~djGrp);
+		~recGrp = Group.after(~ptrGrp);
 
+		~mainGrp = Group.after(~recGrp);
 
-			~fxGrp = Group.after(~recGrp);
-			~spatGrp = Group.after(~fxGrp);
-			~masterGrp = Group.after(~spatGrp);
+		~fxGrp = Group.after(~mainGrp);
+		~spatGrp = Group.after(~fxGrp);
+		~masterGrp = Group.after(~spatGrp);
 
+		~dj = Synth.new(
+			\dj,
+			[
+				\amp, -60,
+				\in, 0,
+				\out, ~bus[\djBus]
+			]
+			, ~djGrp);
 
 		~granulation = Synth.new(
 			\master_spat,
 			[
 				\amp,0,
+				\lag, 5,
 				\in, ~bus[\gran_dj],
-				\out, ~bus[\master],//normalement master
+				\out, ~bus[\gran_spat],//normalement master
 			],
 			~fxGrp
 		);
@@ -42,16 +51,29 @@
 			],
 			~fxGrp
 		);
+
+		~spatialisation_gran = Synth.new(
+			\mono_to_sept,
+			[
+				\amp,0,
+				\lag, 2,
+				\pos,0,
+				\width, 2.0,
+				\in, ~bus[\gran_spat],
+				\out, ~bus[\master],//normalement master
+			],
+			~spatGrp
+		);
 		////////////////////////////////////
 		///tous les master se réunissent ici
 		~master = Synth.new(
 			\master_spat,
 			[
 				\amp, 0,
-				\in, ~bus[\masterSpat],
+				\in, ~bus[\master],
 				\out, 0,
 			],
-			~masterGrpSpat
+			~masterGrp
 		);
 	});
 };

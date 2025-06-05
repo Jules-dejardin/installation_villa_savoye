@@ -4,13 +4,11 @@
 	// MIDIIn.connectAll;
 
 	e = Dictionary.new;
-
+	// ~one.set(\out,0);
 	e.add(\init -> {
-		~one = Synth(\dj, [\in, 0, \out, 6, \amp, -60], ~mainGrp);//dj
+		// ~one = Synth(\dj, [\in, 0, \out, 6, \amp, -60], ~mainGrp);//dj
 		~recBuff = Buffer.alloc(s, s.sampleRate * 5, 1);
-		// ~recBuff_samp = Buffer.alloc(s, s.sampleRate * 5, 1);
-		// ~recBuff_2 = Buffer.alloc(s, s.sampleRate * 40, 1);
-		//~recBuff.plot;
+
 		~djRead = Synth(\AudioInputStereo, [\input, 0, \out, ~bus[\djBus], \amp, 0], ~djGrp);
 		~djPtr = Synth(\ptr, [\buf, ~recBuff, \out, ~bus[\ptrBus]], ~ptrGrp);
 
@@ -18,8 +16,6 @@
 
 		~env_grad= Buffer.sendCollection(s, Env([0, 1,0.5,0], [0.001, 0.1,0.2], [-4,-4, -2]).discretize, 1);
 	});
-	// Compander
-	// ~vstMassiveSynth.editor;
 
 	e.add(\loadPresets-> {
 
@@ -314,16 +310,12 @@
 		}); // dry/wet du BrickWall
 
 		if(ccNum == 80 /*&& channel == 1*/, {
-			~test = val;
 			~volValh = val.linlin(0, 127, -20, 9).round(0.1);
-			if(~test == 0, {
-				~one.set(\amp,-80);
-			},{
-			~one.set(\amp, ~volValh);
+			~dj.set(\amp, ~volValh);
 			"Volume Radio".postln;
 			~volValh.postln;
 			});
-		});
+
 
 		if(ccNum == 79 /*&& channel == 1*/, {
 			~mixDel = val;
@@ -527,10 +519,10 @@
 		});
 		// modulation radio amp par saw
 		if (ccNum == 52, {
-			~modRad = val.linlin(0,127,0,25).round(0.1);
-			~one.set(\mod, ~modRad);
+			~comb_trick = val.linlin(0,127,50,500).round(1);
+			~comb.set(\freq, ~comb_trick);
 			"Modulation radio".postln;
-			~modRad.postln;
+			~comb_trick.postln;
 		});
 		//noise freq
 		if (ccNum == 51, {
